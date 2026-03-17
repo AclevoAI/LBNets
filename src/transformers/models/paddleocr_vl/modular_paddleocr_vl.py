@@ -23,6 +23,7 @@ from typing import Optional
 import numpy as np
 import torch
 import torch.nn.functional as F
+from huggingface_hub.dataclasses import strict
 from torch import nn
 
 from ... import initialization as init
@@ -578,41 +579,10 @@ class PaddleOCRVLProcessor(ProcessorMixin):
         return BatchFeature(data={**text_inputs, **image_inputs}, tensor_type=return_tensors)
 
 
+@auto_docstring(checkpoint="PaddlePaddle/PaddleOCR-VL")
+@strict(accept_kwargs=True)
 class PaddleOCRVisionConfig(SiglipVisionConfig):
     r"""
-    This is the configuration class to store the configuration of a [`PaddleOCRVisionModel`]. It is used to instantiate a
-    PaddleOCRVL vision encoder according to the specified arguments, defining the model architecture. Instantiating a
-    configuration with the defaults will yield a similar configuration to that of the vision encoder of the PaddleOCRVL
-    [PaddlePaddle/PaddleOCRVL](https://huggingface.co/PaddlePaddle/PaddleOCR-VL) architecture.
-
-    Configuration objects inherit from [`PreTrainedConfig`] and can be used to control the model outputs. Read the
-    documentation from [`PreTrainedConfig`] for more information.
-
-    Args:
-        hidden_size (`int`, *optional*, defaults to 1152):
-            Dimensionality of the encoder layers and the pooler layer.
-        intermediate_size (`int`, *optional*, defaults to 4304):
-            Dimensionality of the "intermediate" (i.e., feed-forward) layer in the Transformer encoder.
-        num_hidden_layers (`int`, *optional*, defaults to 27):
-            Number of hidden layers in the Transformer encoder.
-        num_attention_heads (`int`, *optional*, defaults to 16):
-            Number of attention heads for each attention layer in the Transformer encoder.
-        num_channels (`int`, *optional*, defaults to 3):
-            Number of channels in the input images.
-        image_size (`int`, *optional*, defaults to 384):
-            The size (resolution) of each image.
-        patch_size (`int`, *optional*, defaults to 14):
-            The size (resolution) of each patch.
-        hidden_act (`str` or `function`, *optional*, defaults to `"gelu_pytorch_tanh"`):
-            The non-linear activation function (function or string) in the encoder and pooler. If string, `"gelu"`,
-            `"relu"`, `"selu"` and `"gelu_new"` `"quick_gelu"` are supported.
-        layer_norm_eps (`float`, *optional*, defaults to 1e-06):
-            The epsilon used by the layer normalization layers.
-        attention_dropout (`float`, *optional*, defaults to 0.0):
-            The dropout ratio for the attention probabilities.
-        spatial_merge_size (`int`, *optional*, defaults to 2):
-            The size used for merging spatial dimensions.
-
     Example:
 
     ```python
@@ -632,55 +602,26 @@ class PaddleOCRVisionConfig(SiglipVisionConfig):
     model_type = "paddleocr_vl_vision"
     base_config_key = "vision_config"
 
-    def __init__(
-        self,
-        hidden_size=1152,
-        intermediate_size=4304,
-        num_hidden_layers=27,
-        num_attention_heads=16,
-        num_channels=3,
-        image_size=384,
-        patch_size=14,
-        hidden_act="gelu_pytorch_tanh",
-        layer_norm_eps=1e-6,
-        attention_dropout=0.0,
-        spatial_merge_size=2,
-        **kwargs,
-    ):
-        super().__init__()
-        self.spatial_merge_size = spatial_merge_size
+    hidden_size: int = 1152
+    intermediate_size: int = 4304
+    num_hidden_layers: int = 27
+    num_attention_heads: int = 16
+    image_size: int = 384
+    patch_size: int = 14
+    spatial_merge_size: int = 2
 
 
+@auto_docstring(checkpoint="PaddlePaddle/PaddleOCR-VL")
+@strict(accept_kwargs=True)
 class PaddleOCRTextConfig(Ernie4_5Config):
     model_type = "paddleocr_vl_text"
 
 
+@auto_docstring(checkpoint="PaddlePaddle/PaddleOCR-VL")
+@strict(accept_kwargs=True)
 class PaddleOCRVLConfig(Qwen2VLConfig):
     r"""
-    This is the configuration class to store the configuration of a [`PaddleOCRVLForConditionalGeneration`]. It is used to instantiate a
-    PaddleOCRVL model according to the specified arguments, defining the model architecture. Instantiating a configuration
-    with the defaults will yield a similar configuration to that of
-    PaddleOCRVL [PaddlePaddle/PaddleOCR-VL](https://huggingface.co/PaddlePaddle/PaddleOCR-VL).
-
-    Configuration objects inherit from [`PreTrainedConfig`] and can be used to control the model outputs. Read the
-    documentation from [`PreTrainedConfig`] for more information.
-
-
-    Args:
-        text_config (`Union[PreTrainedConfig, dict]`, *optional*, defaults to `PaddleOCRTextConfig`):
-            The config object or dictionary of the text backbone.
-        vision_config (`Union[PreTrainedConfig, dict]`,  *optional*, defaults to `PaddleOCRVisionConfig`):
-            The config object or dictionary of the vision backbone.
-        image_token_id (`int`, *optional*, defaults to 100295):
-            The image token index to encode the image prompt.
-        video_token_id (`int`, *optional*, defaults to 100296):
-            The video token index to encode the image prompt.
-        vision_start_token_id (`int`, *optional*, defaults to 101305):
-            The token index to denote start of vision input.
-        vision_end_token_id (`int`, *optional*, defaults to 101306):
-            The token index to denote end of vision input.
-        tie_word_embeddings (`bool`, *optional*, defaults to `True`):
-            Whether the model's input and output word embeddings should be tied.
+    Example:
 
     ```python
     >>> from transformers import PaddleOCRVLForConditionalGeneration, PaddleOCRVLConfig
@@ -697,18 +638,11 @@ class PaddleOCRVLConfig(Qwen2VLConfig):
 
     sub_configs = {"vision_config": PaddleOCRVisionConfig, "text_config": PaddleOCRTextConfig}
 
-    def __init__(
-        self,
-        text_config=None,
-        vision_config=None,
-        image_token_id=100295,
-        video_token_id=100296,
-        vision_start_token_id=101305,
-        vision_end_token_id=101306,
-        tie_word_embeddings=True,
-        **kwargs,
-    ):
-        super().__init__()
+    image_token_id: int = 100295
+    video_token_id: int = 100296
+    vision_start_token_id: int = 101305
+    vision_end_token_id: int = 101306
+    tie_word_embeddings: int = True
 
 
 class PaddleOCRProjector(nn.Module):
@@ -1123,7 +1057,6 @@ class PaddleOCRVLCausalLMOutputWithPast(Qwen2VLCausalLMOutputWithPast):
 
 
 class PaddleOCRVLModel(Qwen2VLModel):
-    _checkpoint_conversion_mapping = {"^model": "language_model"}
     _keys_to_ignore_on_load_unexpected = ["packing_position_embedding", "vision_model.head"]
 
     def __init__(self, config: PaddleOCRVLConfig):
@@ -1267,11 +1200,6 @@ class PaddleOCRVLModel(Qwen2VLModel):
 
 
 class PaddleOCRVLForConditionalGeneration(Qwen2VLForConditionalGeneration):
-    _checkpoint_conversion_mapping = {
-        "^visual": "model.visual",
-        "^mlp_AR": "model.projector",
-        r"^model(?!(\.visual|\.projector|\.language_model))": "model.language_model",
-    }
     _keys_to_ignore_on_load_unexpected = ["packing_position_embedding", "vision_model.head"]
 
     def get_video_features(self):
